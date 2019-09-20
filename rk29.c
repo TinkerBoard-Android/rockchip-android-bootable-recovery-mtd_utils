@@ -11,8 +11,8 @@
 #include <sys/wait.h>
 #include <sys/mount.h>
 #include <errno.h>
-#include "mtdutils.h"
-#include "rk29.h"
+#include "mtdutils/mtdutils.h"
+#include "mtdutils/rk29.h"
 
 int run(const char *filename, char *const argv[])
 {
@@ -117,8 +117,8 @@ int rk_check_and_resizefs(const char *filename) {
 int rk_check_and_resizefs_f2fs(const char *filename) {
 	int result;
 
-	const char *const e2fsck_argv[] = { "/sbin/fsck_f2fs", filename, NULL };
-	const char *const resizefs_argv[] = { "/sbin/resize.f2fs", filename, NULL  };
+	const char *const e2fsck_argv[] = { "/system/bin/fsck.f2fs", filename, NULL };
+	const char *const resizefs_argv[] = { "/system/bin/resize.f2fs", filename, NULL  };
 	printf("fsck_f2fs check '%s' 11111111111111!\n", filename);
 	result = run(e2fsck_argv[0], (char **) e2fsck_argv);
 	if(result) {

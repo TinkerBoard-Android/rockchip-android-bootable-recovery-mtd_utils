@@ -27,18 +27,13 @@ cc_defaults {
     ],
 }
 
-cc_library {
+cc_library_static {
     name: "libmtdutils",
     defaults: [
         "libmtdutils_defaults",
     ],
     recovery_available: true,
-}
-
-cc_library_static {
-    name: "libmtdutils_vendor",
-    defaults: [
-        "libmtdutils_defaults",
+    export_include_dirs: [
+        "include",
     ],
-    vendor: true,
 }

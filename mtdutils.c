@@ -26,7 +26,7 @@
 #undef NDEBUG
 #include <assert.h>
 
-#include "mtdutils.h"
+#include "mtdutils/mtdutils.h"
 
 struct MtdPartition {
     int device_index;

@@ -22,7 +22,7 @@
 #include <errno.h>
 #include <sys/mount.h>
 
-#include "mounts.h"
+#include "mtdutils/mounts.h"
 
 struct MountedVolume {
     const char *device;
