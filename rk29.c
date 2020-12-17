@@ -94,41 +94,52 @@ int rk_make_ext4fs(const char *filename,long long len, const char *mountpoint)
     return result;
 }
 
-int rk_check_and_resizefs(const char *filename) {
+int rk_check_and_resizefs(const char *filename, const char *boot_blk) {
     int result;
 
     const char *const e2fsck_argv[] = { "/sbin/e2fsck", "-fy", filename, NULL };
-    const char *const resizefs_argv[] = { "/sbin/resize2fs", filename, NULL  };
+//    const char *const resizefs_argv[] = { "/sbin/resize2fs", filename, NULL  };
+    const char *const sgdisk_argv[] = { "/sbin/sgdisk", "--move-second-header", boot_blk, NULL };
+    const char *const parted_argv[] = { "/sbin/parted", boot_blk, "resizepart", "14", "100%", NULL };
 
     result = run(e2fsck_argv[0], (char **) e2fsck_argv);
     if(result) {
         printf("e2fsck check '%s' failed!\n", filename);
-        return result;
+//        return result;
     }
 
-    result = run(resizefs_argv[0], (char **) resizefs_argv);
+    result = run(sgdisk_argv[0], (char **) sgdisk_argv);
     if(result) {
-        printf("resizefs '%s' failed!\n", filename);
+        printf("sgdisk --move-second-header '%s' failed!\n", boot_blk);
+    }
+
+    printf("run %s %s %s %s %s\n", parted_argv[0], parted_argv[1], parted_argv[2], parted_argv[3], parted_argv[4]);
+    result = run(parted_argv[0], (char **) parted_argv);
+    if(result) {
+        printf("parted '%s' failed!\n", filename);
     }
 
     return result;
 }
 
-int rk_check_and_resizefs_f2fs(const char *filename) {
+int rk_check_and_resizefs_f2fs(const char *filename, const char *boot_blk) {
 	int result;
 
 	const char *const e2fsck_argv[] = { "/system/bin/fsck.f2fs", filename, NULL };
-	const char *const resizefs_argv[] = { "/system/bin/resize.f2fs", filename, NULL  };
+//	const char *const resizefs_argv[] = { "/system/bin/resize.f2fs", filename, NULL  };
+	const char *const parted_argv[] = { "/sbin/parted", boot_blk, "resizepart", "14", "100%", NULL };
+
 	printf("fsck_f2fs check '%s' 11111111111111!\n", filename);
 	result = run(e2fsck_argv[0], (char **) e2fsck_argv);
 	if(result) {
 		printf("fsck_f2fs check '%s' failed!\n", filename);
-		return result;
+//		return result;
 	}
 
-	result = run(resizefs_argv[0], (char **) resizefs_argv);
+	printf("run %s %s %s %s %s\n", parted_argv[0], parted_argv[1], parted_argv[2], parted_argv[3], parted_argv[4]);
+	result = run(parted_argv[0], (char **) parted_argv);
 	if(result) {
-		printf("resize.f2fs '%s' failed!\n", filename);
+		printf("parted '%s' failed!\n", filename);
 	}
 
 	return result;
