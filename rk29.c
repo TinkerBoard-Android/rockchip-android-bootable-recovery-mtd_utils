@@ -106,6 +106,32 @@ int rk_check_and_resizefs(const char *filename) {
         return result;
     }
 
+    char blk_path[32] = "\0";
+    result = readlink (filename, blk_path, 32);
+    if(result > 0) {
+        printf("readlink for block path: %s\n", blk_path);
+        char *partnum = strchr(blk_path, 'p');
+        if(partnum != NULL) {
+            partnum[0] = '\0';
+            partnum++;
+            printf("device path: %s\n", blk_path);
+            printf("partition number: %s\n", partnum);
+
+            const char *const sgdisk_argv[] = { "/sbin/sgdisk", "--move-second-header", blk_path, NULL };
+            result = run(sgdisk_argv[0], (char **) sgdisk_argv);
+            if(result) {
+                printf("sgdisk --move-second-header '%s' failed!\n", blk_path);
+            }
+
+            const char *const parted_argv[] = { "/sbin/parted", blk_path, "resizepart", partnum, "100%", NULL };
+            printf("run parted %s %s %s %s %s\n", parted_argv[0], parted_argv[1], parted_argv[2], parted_argv[3], parted_argv[4]);
+            result = run(parted_argv[0], (char **) parted_argv);
+            if(result) {
+                printf("parted '%s' failed!\n", blk_path);
+            }
+        }
+    }
+
     result = run(resizefs_argv[0], (char **) resizefs_argv);
     if(result) {
         printf("resizefs '%s' failed!\n", filename);
