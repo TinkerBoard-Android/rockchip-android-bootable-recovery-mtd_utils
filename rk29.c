@@ -100,7 +100,7 @@ int rk_check_and_resizefs(const char *filename, const char *boot_blk) {
     const char *const e2fsck_argv[] = { "/sbin/e2fsck", "-fy", filename, NULL };
 //    const char *const resizefs_argv[] = { "/sbin/resize2fs", filename, NULL  };
     const char *const sgdisk_argv[] = { "/sbin/sgdisk", "--move-second-header", boot_blk, NULL };
-    const char *const parted_argv[] = { "/sbin/parted", boot_blk, "resizepart", "16", "100%", NULL };
+    const char *const parted_argv[] = { "/sbin/parted", boot_blk, "resizepart", "15", "100%", NULL };
 
     result = run(e2fsck_argv[0], (char **) e2fsck_argv);
     if(result) {
@@ -127,7 +127,7 @@ int rk_check_and_resizefs_f2fs(const char *filename, const char *boot_blk) {
 
 	const char *const e2fsck_argv[] = { "/system/bin/fsck.f2fs", filename, NULL };
 //	const char *const resizefs_argv[] = { "/system/bin/resize.f2fs", filename, NULL  };
-	const char *const parted_argv[] = { "/sbin/parted", boot_blk, "resizepart", "16", "100%", NULL };
+	const char *const parted_argv[] = { "/sbin/parted", boot_blk, "resizepart", "15", "100%", NULL };
 
 	printf("fsck_f2fs check '%s' 11111111111111!\n", filename);
 	result = run(e2fsck_argv[0], (char **) e2fsck_argv);
